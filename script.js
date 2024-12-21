@@ -1,27 +1,53 @@
-// Function to load contributions from localStorage
-function loadContributions() {
-  const contributions = JSON.parse(localStorage.getItem("contributions")) || [];
-  const tableBody = document.getElementById("contributionTableBody");
-  tableBody.innerHTML = ""; // Clear existing rows
+const API_URL = 'http://localhost:5000/api/contributions';
 
-  contributions.forEach(contribution => {
-    const newRow = tableBody.insertRow();
-    newRow.insertCell(0).textContent = contribution.name;
-    newRow.insertCell(1).textContent = contribution.date;
-    newRow.insertCell(2).textContent = contribution.amount;
-    newRow.insertCell(3).textContent = contribution.recipient;
-  });
+// Function to load contributions from the backend
+async function loadContributions() {
+  try {
+    const response = await fetch(API_URL);
+    const contributions = await response.json();
+
+    const tableBody = document.getElementById("contributionTableBody");
+    tableBody.innerHTML = ""; // Clear existing rows
+
+    contributions.forEach(contribution => {
+      const newRow = tableBody.insertRow();
+      newRow.insertCell(0).textContent = contribution.name;
+      newRow.insertCell(1).textContent = contribution.date;
+      newRow.insertCell(2).textContent = contribution.amount;
+      newRow.insertCell(3).textContent = contribution.recipient;
+    });
+  } catch (error) {
+    console.error('Error loading contributions:', error);
+  }
 }
 
-// Function to save a new contribution to localStorage
-function saveContribution(contribution) {
-  const contributions = JSON.parse(localStorage.getItem("contributions")) || [];
-  contributions.push(contribution);
-  localStorage.setItem("contributions", JSON.stringify(contributions));
+// Function to save a new contribution to the backend
+async function saveContribution(contribution) {
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(contribution),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to save contribution');
+    }
+
+    const savedContribution = await response.json();
+    console.log('Saved contribution:', savedContribution);
+
+    // Reload contributions
+    loadContributions();
+  } catch (error) {
+    console.error('Error saving contribution:', error);
+  }
 }
 
 // Event listener for form submission
-document.getElementById("contributionForm").addEventListener("submit", function(event) {
+document.getElementById("contributionForm").addEventListener("submit", async function(event) {
   event.preventDefault(); // Prevent form from refreshing the page
 
   // Get form values
@@ -33,11 +59,8 @@ document.getElementById("contributionForm").addEventListener("submit", function(
   // Create a contribution object
   const contribution = { name, date, amount, recipient };
 
-  // Save the contribution to localStorage
-  saveContribution(contribution);
-
-  // Reload the table with updated data
-  loadContributions();
+  // Save the contribution to the backend
+  await saveContribution(contribution);
 
   // Clear the form
   document.getElementById("contributionForm").reset();
