@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Circle of Trust</title>
+  <link rel="stylesheet" href="back.css">
+</head>
+<body>
+  <header>
+    <h1>Circle of Trust</h1>
+    <p>A collaborative platform to track and manage contributions.</p>
+  </header>
+  <main>
+    <section class="form-section">
+      <h2>Enter Contribution Details</h2>
+      <form id="contributionForm">
+        <label for="name">Your Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="date">Date of Contribution:</label>
+        <input type="date" id="date" name="date" required>
+
+        <label for="amount">Amount ($):</label>
+        <input type="number" id="amount" name="amount" required min="1" step="0.01">
+
+        <label for="recipient">Recipient's Name:</label>
+        <input type="text" id="recipient" name="recipient" required>
+
+        <button type="submit">Submit Contribution</button>
+      </form>
+    </section>
+    <section class="summary-section">
+      <h2>Contribution Summary</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Date</th>
+            <th>Amount ($)</th>
+            <th>Recipient</th>
+          </tr>
+        </thead>
+        <tbody id="contributionTableBody">
+          <!-- Data will be populated here -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+  <footer>
+    <p>Circle of Trust &copy; 2024</p>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>
